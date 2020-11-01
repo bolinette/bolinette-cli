@@ -2,12 +2,21 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
+	"../generator"
 
 	"github.com/AlecAivazis/survey"
 	"github.com/spf13/cobra"
 )
 
 var questions = []*survey.Question{
+	{
+		Name:      "name",
+		Prompt:    &survey.Input{Message: "First name your app: "},
+		Validate:  survey.Required,
+		Transform: survey.Title,
+	},
 	{
 		Name: "app",
 		Prompt: &survey.Select{
@@ -23,14 +32,9 @@ var questions = []*survey.Question{
 				"SQLITE file",
 				"MySql",
 				"PostgreSQL",
-				"None",
 			},
 		},
 	},
-}
-
-func init() {
-	blntCmd.AddCommand(initCmd)
 }
 
 var initCmd = &cobra.Command{
@@ -65,6 +69,7 @@ var initCmd = &cobra.Command{
 		// check current directory and if bolinette is installed
 		fmt.Println(welcomeMessage)
 		answers := struct {
+			Name     string
 			AppType  string `survey:"app"`
 			Database string
 		}{}
@@ -73,5 +78,16 @@ var initCmd = &cobra.Command{
 			fmt.Println(err.Error())
 			return
 		}
+
+		if strings.Contains(answers.AppType, "A simple bolinette API") {
+			generator.GenerateHeadlessBolinetteApi(answers.Name, answers.Database)
+		} else {
+			fmt.Println("Error processing response")
+			fmt.Println("Exiting...")
+		}
 	},
+}
+
+func init() {
+	blntCmd.AddCommand(initCmd)
 }
