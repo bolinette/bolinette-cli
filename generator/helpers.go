@@ -1,12 +1,34 @@
 package generator
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
+
+func generateSecretKey() string {
+	b := make([]byte, 8)
+	binary.LittleEndian.PutUint64(b, uint64(time.Now().Unix()))
+	return fmt.Sprintf("%x", sha256.Sum224(b))
+}
+
+func defaultPortFor(database string) int {
+	switch database {
+	case "SQLITE":
+		return 5000
+	case "MySql":
+		return 3306
+	case "PostgreSQL":
+		return 5432
+	default:
+		return 0
+	}
+}
 
 func createEmptyFile(name string) {
 	d := []byte("")

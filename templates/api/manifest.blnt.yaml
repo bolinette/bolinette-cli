@@ -1,4 +1,4 @@
-name: {{ name }}
-desc: {{ desc }}
-module: {{ module }}
+name: {{.Name}}
+desc: {{.Desc}}
+module: {{.Module}}
 version: 0.0.1

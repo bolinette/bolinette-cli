@@ -2,3 +2,6 @@ bin/
 pkg/
 src/
 .DS_STORE
+
+!env.local.development.yaml
+!.profile

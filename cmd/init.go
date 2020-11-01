@@ -29,7 +29,7 @@ var questions = []*survey.Question{
 		Prompt: &survey.Select{
 			Message: "What type of database do you want ?",
 			Options: []string{
-				"SQLITE file",
+				"SQLITE",
 				"MySql",
 				"PostgreSQL",
 			},

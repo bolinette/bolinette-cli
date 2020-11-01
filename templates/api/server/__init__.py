@@ -1,4 +1,4 @@
 
-import {{ module }}.seeders
-import {{ module }}.controllers
-from {{ module }}.app import bolinette
+import {{.Module}}.seeders
+import {{.Module}}.controllers
+from {{.Module}}.app import bolinette
