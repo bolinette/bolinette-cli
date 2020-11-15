@@ -32,6 +32,7 @@ var questions = []*survey.Question{
 			Options: []string{
 				"SQLITE",
 				"MySql",
+				"MariaDB",
 				"PostgreSQL",
 			},
 		},

@@ -4,52 +4,50 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
 	"text/template"
 )
 
 type app struct {
-	BlntVersion string
-	Name        string
-	Desc        string
-	Module      string
-	Database    string
-	Port        int
-	SecretKey   string
+	BlntVersion      string
+	Name             string
+	Desc             string
+	Module           string
+	Database         string
+	DatabasePassword string
+	Port             int
+	SecretKey        string
 }
 
 var templateURL = "https://raw.githubusercontent.com/bolinette/bolinette-cli/master"
 
 func GenerateHeadlessBolinetteApi(name string, database string) {
 	app := app{
-		BlntVersion: "0.0.1",
-		Name:        name,
-		Desc:        name,
-		Module:      strings.ToLower(name),
-		Database:    database,
-		Port:        defaultPortFor(database),
-		SecretKey:   generateSecretKey(),
+		BlntVersion:      "0.0.1",
+		Name:             name,
+		Desc:             name,
+		Module:           strings.ToLower(name),
+		Database:         strings.ToLower(database),
+		DatabasePassword: generatePassword(),
+		Port:             5000,
+		SecretKey:        generateSecretKey(),
 	}
-	app.makeFoldersAndEmptyInitPy()
-	app.makeFiles()
+	app.createFoldersAndEmptyPyFiles()
+	app.createAPIFilesFromTemplates()
+	app.createDockerFilesFromTemplates()
 }
 
-func (app *app) makeFoldersAndEmptyInitPy() {
-	var folders = []string{"controllers", "models", "services"}
+func (app *app) createFoldersAndEmptyPyFiles() {
+	var srcFolders = []string{"controllers", "models", "services"}
+	var blntFolders = []string{"env", "docker"}
+	var appAndSeedersFile = []string{"app.py", "seeders.py"}
 
-	ioError(os.MkdirAll(fmt.Sprintf("%s/env", app.Name), 0755))
-
-	for _, folder := range folders {
-		ioError(os.MkdirAll(fmt.Sprintf("%s/src/%s", app.Name, folder), 0755))
-		createEmptyFile(fmt.Sprintf("%s/src/%s/__init__.py", app.Name, folder))
-	}
-
-	createEmptyFile(fmt.Sprintf("%s/src/app.py", app.Name))
-	createEmptyFile(fmt.Sprintf("%s/src/seeders.py", app.Name))
+	makeFolders([]string{"src"}, app.Name, appAndSeedersFile)
+	makeFolders(srcFolders, fmt.Sprintf("%s/src", app.Name), []string{"__init__.py"})
+	makeFolders(blntFolders, app.Name, nil)
 }
 
-func (app *app) makeFiles() {
+func (app *app) createAPIFilesFromTemplates() {
 	var apiTemplates = map[string]string{
 		fmt.Sprintf("%s/templates/api/.gitignore", templateURL):                          fmt.Sprintf("%s/.gitignore", app.Name),
 		fmt.Sprintf("%s/templates/api/manifest.blnt.yaml", templateURL):                  fmt.Sprintf("%s/manifest.blnt.yaml", app.Name),
@@ -62,7 +60,21 @@ func (app *app) makeFiles() {
 		fmt.Sprintf("%s/templates/api/instance/init.yaml", templateURL):                  fmt.Sprintf("%s/env/init.yaml", app.Name),
 	}
 
-	for src, dest := range apiTemplates {
+	app._createFilesFromTemplate(apiTemplates)
+}
+
+func (app *app) createDockerFilesFromTemplates() {
+	var dockerTemplates = map[string]string{
+		fmt.Sprintf("%s/templates/docker/Dockerfile", templateURL):                      fmt.Sprintf("%s/docker/Dockerfile", app.Name),
+		fmt.Sprintf("%s/templates/docker/databases/%s.yaml", templateURL, app.Database): fmt.Sprintf("%s/docker/db.yaml", app.Name),
+		fmt.Sprintf("%s/templates/docker/app.yaml", templateURL):                        fmt.Sprintf("%s/docker/%s.yaml", app.Name, app.Module),
+	}
+
+	app._createFilesFromTemplate(dockerTemplates)
+}
+
+func (app *app) _createFilesFromTemplate(templateToFiles map[string]string) {
+	for src, dest := range templateToFiles {
 		t, err := template.New(src).Parse(downloadFile(src))
 		parseTemplateError(err)
 
