@@ -38,28 +38,28 @@ func GenerateHeadlessBolinetteApi(name string, database string) {
 func (app *app) makeFoldersAndEmptyInitPy() {
 	var folders = []string{"controllers", "models", "services"}
 
-	ioError(os.Mkdir("env", 0755))
+	ioError(os.MkdirAll(fmt.Sprintf("%s/env", app.Name), 0755))
 
 	for _, folder := range folders {
-		ioError(os.MkdirAll(fmt.Sprintf("%s/%s", app.Module, folder), 0755))
-		createEmptyFile(fmt.Sprintf("%s/%s/__init__.py", app.Module, folder))
+		ioError(os.MkdirAll(fmt.Sprintf("%s/src/%s", app.Name, folder), 0755))
+		createEmptyFile(fmt.Sprintf("%s/src/%s/__init__.py", app.Name, folder))
 	}
 
-	createEmptyFile(fmt.Sprintf("%s/app.py", app.Module))
-	createEmptyFile(fmt.Sprintf("%s/seeders.py", app.Module))
+	createEmptyFile(fmt.Sprintf("%s/src/app.py", app.Name))
+	createEmptyFile(fmt.Sprintf("%s/src/seeders.py", app.Name))
 }
 
 func (app *app) makeFiles() {
 	var apiTemplates = map[string]string{
-		fmt.Sprintf("%s/templates/api/.gitignore", templateURL):                          ".gitignore",
-		fmt.Sprintf("%s/templates/api/manifest.blnt.yaml", templateURL):                  "manifest.blnt.yaml",
-		fmt.Sprintf("%s/templates/api/requirements.txt", templateURL):                    "requirements.txt",
-		fmt.Sprintf("%s/templates/api/server/__init__.py", templateURL):                  fmt.Sprintf("%s/__init__.py", app.Module),
-		fmt.Sprintf("%s/templates/api/instance/.profile", templateURL):                   "env/.profile",
-		fmt.Sprintf("%s/templates/api/instance/env.development.yaml", templateURL):       "env/env.development.yaml",
-		fmt.Sprintf("%s/templates/api/instance/env.local.development.yaml", templateURL): "env/env.local.development.yaml",
-		fmt.Sprintf("%s/templates/api/instance/env.production.yaml", templateURL):        "env/env.production.yaml",
-		fmt.Sprintf("%s/templates/api/instance/init.yaml", templateURL):                  "env/init.yaml",
+		fmt.Sprintf("%s/templates/api/.gitignore", templateURL):                          fmt.Sprintf("%s/.gitignore", app.Name),
+		fmt.Sprintf("%s/templates/api/manifest.blnt.yaml", templateURL):                  fmt.Sprintf("%s/manifest.blnt.yaml", app.Name),
+		fmt.Sprintf("%s/templates/api/requirements.txt", templateURL):                    fmt.Sprintf("%s/requirements.txt", app.Name),
+		fmt.Sprintf("%s/templates/api/server/__init__.py", templateURL):                  fmt.Sprintf("%s/src/__init__.py", app.Name),
+		fmt.Sprintf("%s/templates/api/instance/.profile", templateURL):                   fmt.Sprintf("%s/env/.profile", app.Name),
+		fmt.Sprintf("%s/templates/api/instance/env.development.yaml", templateURL):       fmt.Sprintf("%s/env/env.development.yaml", app.Name),
+		fmt.Sprintf("%s/templates/api/instance/env.local.development.yaml", templateURL): fmt.Sprintf("%s/env/env.local.development.yaml", app.Name),
+		fmt.Sprintf("%s/templates/api/instance/env.production.yaml", templateURL):        fmt.Sprintf("%s/env/env.production.yaml", app.Name),
+		fmt.Sprintf("%s/templates/api/instance/init.yaml", templateURL):                  fmt.Sprintf("%s/env/init.yaml", app.Name),
 	}
 
 	for src, dest := range apiTemplates {

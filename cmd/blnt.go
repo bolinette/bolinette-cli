@@ -14,6 +14,8 @@ var blntCmd = &cobra.Command{
 }
 
 func Execute() {
+	getBolinetteVersion()
+	getCliVersion()
 	if err := blntCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

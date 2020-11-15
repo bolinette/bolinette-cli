@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"../generator"
@@ -65,9 +66,7 @@ var initCmd = &cobra.Command{
 																		
 																		
 		`
-		// add the cli version and bolinette version
-		// check current directory and if bolinette is installed
-		fmt.Println(welcomeMessage)
+		fmt.Printf("%s\nBolinette version: %s, CLI version: %s\n", welcomeMessage, bolinettVersion, cliVersion)
 		answers := struct {
 			Name     string
 			AppType  string `survey:"app"`
@@ -80,11 +79,17 @@ var initCmd = &cobra.Command{
 		}
 
 		if strings.Contains(answers.AppType, "A simple bolinette API") {
-			generator.GenerateHeadlessBolinetteApi(answers.Name, answers.Database)
+			_, err := os.Stat(answers.Name)
+			if os.IsNotExist(err) {
+				generator.GenerateHeadlessBolinetteApi(answers.Name, answers.Database)
+			} else {
+				fmt.Fprintln(os.Stderr, fmt.Sprintf("Your already have a folder %s in your current directory.", answers.Name))
+			}
 		} else {
 			fmt.Println("Error processing response")
 			fmt.Println("Exiting...")
 		}
+		os.Exit(1)
 	},
 }
 
