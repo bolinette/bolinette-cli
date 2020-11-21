@@ -6,7 +6,7 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: {{.Password}}
+      POSTGRES_PASSWORD: {{.DatabasePassword}}
       POSTGRES_USER: {{.Module}}
       POSTGRES_DB: {{.Nodule}}
     ports:

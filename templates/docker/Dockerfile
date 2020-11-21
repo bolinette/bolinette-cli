@@ -17,4 +17,4 @@ RUN echo "production" > ./env/.profile
 
 EXPOSE 5000
 
-CMD ["gunicorn", "-w", ${WORKER}, "server:app", "--bind", ":5000", "--worker-class", "aiohttp.GunicornWebWorker"]
+CMD ["gunicorn", "-w", ${WORKER}, "src/bolinette:run", "--bind", ":5000", "--worker-class", "aiohttp.GunicornWebWorker"]

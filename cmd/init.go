@@ -83,7 +83,7 @@ var initCmd = &cobra.Command{
 			fmt.Println(err.Error())
 			return
 		}
-
+		os.Rename("./venv", fmt.Sprintf("./%s/venv", answers.Name))
 		if strings.Contains(answers.AppType, "A simple bolinette API") {
 			_, err := os.Stat(answers.Name)
 			if os.IsNotExist(err) {
@@ -116,16 +116,14 @@ func initBolinetteAndVenv() {
 			_, err = cmd.CombinedOutput()
 			if err != nil {
 				fmt.Println("Cannot find a version of Python installed.")
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
+				panic(err)
 			}
 		}
 	}
 	cmd := exec.Command("bash", "-c", "source venv/bin/activate && pip install pip --upgrade && pip install bolinette")
 	_, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		panic(err)
 	}
 	fmt.Println("done")
 }

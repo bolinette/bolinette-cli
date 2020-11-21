@@ -40,9 +40,8 @@ func GenerateHeadlessBolinetteApi(name string, database string) {
 func (app *app) createFoldersAndEmptyPyFiles() {
 	var srcFolders = []string{"controllers", "models", "services"}
 	var blntFolders = []string{"env", "docker"}
-	var appAndSeedersFile = []string{"app.py", "seeders.py"}
 
-	makeFolders([]string{"src"}, app.Name, appAndSeedersFile)
+	makeFolders([]string{"src"}, app.Name, nil)
 	makeFolders(srcFolders, fmt.Sprintf("%s/src", app.Name), []string{"__init__.py"})
 	makeFolders(blntFolders, app.Name, nil)
 }
@@ -53,6 +52,8 @@ func (app *app) createAPIFilesFromTemplates() {
 		fmt.Sprintf("%s/templates/api/manifest.blnt.yaml", templateURL):                  fmt.Sprintf("%s/manifest.blnt.yaml", app.Name),
 		fmt.Sprintf("%s/templates/api/requirements.txt", templateURL):                    fmt.Sprintf("%s/requirements.txt", app.Name),
 		fmt.Sprintf("%s/templates/api/server/__init__.py", templateURL):                  fmt.Sprintf("%s/src/__init__.py", app.Name),
+		fmt.Sprintf("%s/templates/api/server/app.py", templateURL):                       fmt.Sprintf("%s/src/app.py", app.Name),
+		fmt.Sprintf("%s/templates/api/server/seeders.py", templateURL):                   fmt.Sprintf("%s/src/seeders.py", app.Name),
 		fmt.Sprintf("%s/templates/api/instance/.profile", templateURL):                   fmt.Sprintf("%s/env/.profile", app.Name),
 		fmt.Sprintf("%s/templates/api/instance/env.development.yaml", templateURL):       fmt.Sprintf("%s/env/env.development.yaml", app.Name),
 		fmt.Sprintf("%s/templates/api/instance/env.local.development.yaml", templateURL): fmt.Sprintf("%s/env/env.local.development.yaml", app.Name),
