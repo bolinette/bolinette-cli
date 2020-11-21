@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 
 	"../generator"
@@ -44,6 +46,9 @@ var initCmd = &cobra.Command{
 	Short: "Initialise a Bolinette application",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		initBolinetteAndVenv()
+		getBolinetteVersion()
+		getCliVersion()
 		welcomeMessage :=
 			`
  ▄▄▄▄    ▒█████   ██▓     ██▓ ███▄    █ ▓█████▄▄▄█████▓▄▄▄█████▓▓█████ 
@@ -96,4 +101,31 @@ var initCmd = &cobra.Command{
 
 func init() {
 	blntCmd.AddCommand(initCmd)
+}
+
+func initBolinetteAndVenv() {
+	fmt.Print("Initialising a virtualenv and installing Bolinette...")
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Println("To be implemented")
+	default:
+		cmd := exec.Command("bash", "-c", "python -m venv venv")
+		_, err := cmd.CombinedOutput()
+		if err != nil {
+			cmd = exec.Command("bash", "-c", "python3 -m venv venv")
+			_, err = cmd.CombinedOutput()
+			if err != nil {
+				fmt.Println("Cannot find a version of Python installed.")
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
+			}
+		}
+	}
+	cmd := exec.Command("bash", "-c", "source venv/bin/activate && pip install pip --upgrade && pip install bolinette")
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	fmt.Println("done")
 }

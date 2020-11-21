@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -27,18 +28,25 @@ var versionCmd = &cobra.Command{
 }
 
 func getBolinetteVersion() string {
-	cmd := exec.Command("bash", "-c", "python -m pip freeze")
+	var cmd = &exec.Cmd{}
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Println("To be implemented")
+	default:
+		cmd = exec.Command("bash", "-c", "source venv/bin/activate && pip freeze")
+	}
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+	fmt.Println("jnkh")
 	freeze := string(out)
 	re := regexp.MustCompile(`Bolinette==[\d+.]+`)
 	freeze = re.FindString(freeze)
 	split := strings.Split(freeze, "==")
 	if len(split) < 2 {
-		fmt.Fprintln(os.Stderr, "Bolinette CLI did not find Bolinette installed in your computer.\nGo check out https://github.com/bolinette/bolinette")
+		fmt.Fprintln(os.Stderr, "Error when fetching the version of bolinette")
 		os.Exit(1)
 	}
 	bolinettVersion = split[1]
