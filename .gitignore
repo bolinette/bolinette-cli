@@ -5,3 +5,5 @@ src/
 
 !env.local.development.yaml
 !.profile
+
+go.sum
