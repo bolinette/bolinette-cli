@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./cmd"
+	"github.com/bolinette/bolinette-cli/cmd"
 )
 
 func main() {

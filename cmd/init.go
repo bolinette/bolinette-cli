@@ -7,10 +7,10 @@ import (
 	"runtime"
 	"strings"
 
-	"../generator"
+	"github.com/bolinette/bolinette-cli/generator"
 
-	"github.com/AlecAivazis/survey"
 	"github.com/spf13/cobra"
+	"gopkg.in/AlecAivazis/survey.v1"
 )
 
 var questions = []*survey.Question{
