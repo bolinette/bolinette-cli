@@ -67,9 +67,12 @@ func (app *app) createAPIFilesFromTemplates() {
 
 func (app *app) createDockerFilesFromTemplates() {
 	var dockerTemplates = map[string]string{
-		fmt.Sprintf("%s/templates/docker/Dockerfile", templateURL):                      fmt.Sprintf("%s/docker/Dockerfile", app.Name),
-		fmt.Sprintf("%s/templates/docker/databases/%s.yaml", templateURL, app.Database): fmt.Sprintf("%s/docker/db.yaml", app.Name),
-		fmt.Sprintf("%s/templates/docker/app.yaml", templateURL):                        fmt.Sprintf("%s/docker/%s.yaml", app.Name, app.Module),
+		fmt.Sprintf("%s/templates/docker/Dockerfile", templateURL): fmt.Sprintf("%s/docker/Dockerfile", app.Name),
+		fmt.Sprintf("%s/templates/docker/app.yaml", templateURL):   fmt.Sprintf("%s/docker/%s.yaml", app.Name, app.Module),
+	}
+
+	if app.Database != "sqlite" {
+		dockerTemplates[fmt.Sprintf("%s/templates/docker/databases/%s.yaml", templateURL, app.Database)] = fmt.Sprintf("%s/docker/db.yaml", app.Name)
 	}
 
 	app._createFilesFromTemplate(dockerTemplates)
