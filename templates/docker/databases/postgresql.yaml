@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_PASSWORD: {{.DatabasePassword}}
       POSTGRES_USER: {{.Module}}
-      POSTGRES_DB: {{.Nodule}}
+      POSTGRES_DB: {{.Module}}
     ports:
       - "5432:5432"
     volumes:
