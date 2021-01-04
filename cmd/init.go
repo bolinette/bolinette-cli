@@ -83,7 +83,6 @@ var initCmd = &cobra.Command{
 			fmt.Println(err.Error())
 			return
 		}
-		os.Rename("./venv", fmt.Sprintf("./%s/venv", answers.Name))
 		if strings.Contains(answers.AppType, "A simple bolinette API") {
 			_, err := os.Stat(answers.Name)
 			if os.IsNotExist(err) {
@@ -94,8 +93,9 @@ var initCmd = &cobra.Command{
 		} else {
 			fmt.Println("Error processing response")
 			fmt.Println("Exiting...")
+			os.Exit(1)
 		}
-		os.Exit(1)
+		os.Rename("./venv", fmt.Sprintf("./%s/.venv", answers.Name))
 	},
 }
 
