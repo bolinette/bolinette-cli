@@ -40,7 +40,6 @@ func getBolinetteVersion() string {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Println("jnkh")
 	freeze := string(out)
 	re := regexp.MustCompile(`Bolinette==[\d+.]+`)
 	freeze = re.FindString(freeze)

@@ -51,6 +51,7 @@ func (app *app) createAPIFilesFromTemplates() {
 		fmt.Sprintf("%s/templates/api/.gitignore", templateURL):                          fmt.Sprintf("%s/.gitignore", app.Name),
 		fmt.Sprintf("%s/templates/api/manifest.blnt.yaml", templateURL):                  fmt.Sprintf("%s/manifest.blnt.yaml", app.Name),
 		fmt.Sprintf("%s/templates/api/requirements.txt", templateURL):                    fmt.Sprintf("%s/requirements.txt", app.Name),
+		fmt.Sprintf("%s/templates/api/server.py", templateURL):                           fmt.Sprintf("%s/server.py", app.Name),
 		fmt.Sprintf("%s/templates/api/server/__init__.py", templateURL):                  fmt.Sprintf("%s/src/__init__.py", app.Name),
 		fmt.Sprintf("%s/templates/api/server/app.py", templateURL):                       fmt.Sprintf("%s/src/app.py", app.Name),
 		fmt.Sprintf("%s/templates/api/server/seeders.py", templateURL):                   fmt.Sprintf("%s/src/seeders.py", app.Name),

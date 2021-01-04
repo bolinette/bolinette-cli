@@ -121,9 +121,11 @@ func initBolinetteAndVenv() {
 		}
 	}
 	cmd := exec.Command("bash", "-c", "source venv/bin/activate && pip install pip --upgrade && pip install bolinette")
-	_, err := cmd.CombinedOutput()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
-		panic(err)
+		fmt.Println(string(out))
+		fmt.Println("You may need to instal gcc compiler on your device.")
+		os.Exit(1)
 	}
 	fmt.Println("done")
 }
