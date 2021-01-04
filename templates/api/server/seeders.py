@@ -1,19 +1,23 @@
-from bolinette import db, env
-from bolinette.network import transaction
-from bolinette.services import role_service, user_service
+from datetime import datetime
 
+from bolinette import blnt
+from bolinette.decorators import seeder
+from bolinette.defaults.services import RoleService, UserService
 
-@db.engine.seeder
-async def role_seeder():
-    with transaction:
+@seeder
+async def role_seeder(context: blnt.BolinetteContext):
+    role_service: RoleService = context.service('role')
+    async with blnt.Transaction(context):
         await role_service.create({'name': 'root'})
         await role_service.create({'name': 'admin'})
 
 
-@db.engine.seeder
-async def dev_user_seeder():
-    if env['PROFILE'] == 'development':
-        with transaction:
+@seeder
+async def dev_user_seeder(context: blnt.BolinetteContext):
+    if context.env['profile'] == 'development':
+        role_service: RoleService = context.service('role')
+        user_service: UserService = context.service('user')
+        async with blnt.Transaction(context):
             root = await role_service.get_by_name('root')
             admin = await role_service.get_by_name('admin')
             root_usr = await user_service.create({

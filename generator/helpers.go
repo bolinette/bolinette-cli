@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -51,4 +52,11 @@ func downloadFile(url string) string {
 	file, err := ioutil.ReadAll(resp.Body)
 	ioError(err)
 	return string(file)
+}
+
+func allToLower(strs []string) []string {
+	for i, str := range strs {
+		strs[i] = strings.ToLower(str)
+	}
+	return strs
 }

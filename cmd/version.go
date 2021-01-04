@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var bolinettVersion string
+var bolinetteVersion string
 var cliVersion string
 
 func init() {
@@ -23,7 +23,7 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Bolinette and Bolinette cli",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Bolinette version: %s, CLI version: %s\n", bolinettVersion, cliVersion)
+		fmt.Printf("Bolinette version: %s, CLI version: %s\n", bolinetteVersion, cliVersion)
 	},
 }
 
@@ -48,8 +48,8 @@ func getBolinetteVersion() string {
 		fmt.Fprintln(os.Stderr, "Error when fetching the version of bolinette")
 		os.Exit(1)
 	}
-	bolinettVersion = split[1]
-	return bolinettVersion
+	bolinetteVersion = split[1]
+	return bolinetteVersion
 }
 
 func getCliVersion() string {

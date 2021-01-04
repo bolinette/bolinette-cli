@@ -3,15 +3,29 @@ version: '3.8'
 services:
 
   app:
+    image: {{.Name}}
+    build: .
     depends_on:
-      - db
-
-  db:
+    {{if .Databases}}
+      {{- range $db := .Databases }}
+      - {{$db}}
+      {{- end}}
+    {{- end}}
+    networks:
+      - {{.Module}}
+    ports:
+      - {{.Port}}
+    
+{{if .Databases}}
+  {{- range $db := .Databases }}
+  {{$db}}:
     extends:
-      file: db.yaml
+      file: {{$db}}.yaml
       service: db
     networks:
       - {{.Module}}
+  {{- end}}
+{{- end}}
 
   adminer:
     extends:

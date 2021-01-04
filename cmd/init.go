@@ -29,14 +29,21 @@ var questions = []*survey.Question{
 	},
 	{
 		Name: "database",
-		Prompt: &survey.Select{
-			Message: "What type of database do you want ?",
+		Prompt: &survey.MultiSelect{
+			Message: "Select your database(s) : (space to select)",
 			Options: []string{
 				"SQLITE",
 				"MySql",
 				"MariaDB",
 				"PostgreSQL",
+				"MongoDB",
 			},
+		},
+	},
+	{
+		Name: "swagger",
+		Prompt: &survey.Confirm{
+			Message: "Do you want API documentations with Swagger ?",
 		},
 	},
 }
@@ -72,11 +79,12 @@ var initCmd = &cobra.Command{
 																		
 																		
 		`
-		fmt.Printf("%s\nBolinette version: %s, CLI version: %s\n", welcomeMessage, bolinettVersion, cliVersion)
+		fmt.Printf("%s\nBolinette version: %s, CLI version: %s\n", welcomeMessage, bolinetteVersion, cliVersion)
 		answers := struct {
-			Name     string
-			AppType  string `survey:"app"`
-			Database string
+			Name      string
+			AppType   string `survey:"app"`
+			Databases []string
+			Swagger   bool
 		}{}
 		err := survey.Ask(questions, &answers)
 		if err != nil {
@@ -86,7 +94,7 @@ var initCmd = &cobra.Command{
 		if strings.Contains(answers.AppType, "A simple bolinette API") {
 			_, err := os.Stat(answers.Name)
 			if os.IsNotExist(err) {
-				generator.GenerateHeadlessBolinetteApi(answers.Name, answers.Database)
+				generator.GenerateHeadlessBolinetteApi(bolinetteVersion, answers.Name, answers.Databases, answers.Swagger)
 			} else {
 				fmt.Fprintln(os.Stderr, fmt.Sprintf("Your already have a folder %s in your current directory.", answers.Name))
 			}
