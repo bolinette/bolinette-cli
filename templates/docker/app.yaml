@@ -7,8 +7,8 @@ services:
     build: .
     depends_on:
     {{if .Databases}}
-      {{- range $db := .Databases }}
-      - {{$db}}
+      {{- range .Databases }}
+      - {{.}}
       {{- end}}
     {{- end}}
     networks:
@@ -17,13 +17,14 @@ services:
       - {{.Port}}
     
 {{if .Databases}}
-  {{- range $db := .Databases }}
-  {{$db}}:
+  {{- range .Databases }}
+  {{- $module := .Module}}
+  {{.}}:
     extends:
-      file: {{$db}}.yaml
+      file: {{.}}.yaml
       service: db
     networks:
-      - {{.Module}}
+      - {{$module}}
   {{- end}}
 {{- end}}
 
