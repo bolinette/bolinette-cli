@@ -17,8 +17,8 @@ services:
       - {{.Port}}
     
 {{if .Databases}}
-  {{- range .Databases }}
   {{- $module := .Module}}
+  {{- range .Databases }}
   {{.}}:
     extends:
       file: {{.}}.yaml
